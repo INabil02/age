@@ -1,6 +1,6 @@
-projectKey=AmazonSES
+projectKey=ma.ismail:AmazonSES
 serverUrl=http://localhost:9000
 serverVersion=7.6.0.21501
-dashboardUrl=http://localhost:9000/dashboard?id=AmazonSES
-ceTaskId=AW6TxWDJM2W8r904IABK
-ceTaskUrl=http://localhost:9000/api/ce/task?id=AW6TxWDJM2W8r904IABK
+dashboardUrl=http://localhost:9000/dashboard?id=ma.ismail%3AAmazonSES
+ceTaskId=AW6nqQ6hy4Y9qsvyQ4UV
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AW6nqQ6hy4Y9qsvyQ4UV
