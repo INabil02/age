@@ -2,11 +2,14 @@ language: java
 sudo: false
 install: true
 addons:
-    sonarqube: true
-    
+  sonarcloud:
+    organization: amazonse
+    token:
+      secure: b96411936284395a03d97883fd30af45a2965060
+jdk:
+  - oraclejdk8
 script:
-- sonar-scanner -D sonar.host.url=https:/sonarqube.com -D sonar.login=11ef520864c2d8cb262343fd8bfdd1f73cb0dfd8 -X
-
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
 cache:
   directories:
     - '$HOME/.m2/repository'
