@@ -7,7 +7,7 @@ public class Test {
 		
 		Integer c = 5;
 		
-		System.out.println(a == c);
+		System.out.println(a.equals(c));
 	}
 
 }
