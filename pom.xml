@@ -18,6 +18,8 @@
 		<sonar.organization>amazonse</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.login>cc998f65287da620adeef04bcf36e58e1644e543</sonar.login>
+		
+		<exec.mainClass>ma.ismail.AmazonSES.Test</exec.mainClass>
 	</properties>
 
 	<build>
