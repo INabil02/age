@@ -1,21 +1,22 @@
 node {
-    stage 'Clone the project'
-    git 'https://github.com/INabil02/public-repo.git'
-
     dir('spring-jenkins-pipeline') {
+		
+		stage 'Clone the project'
+		git branch: 'projet-Jenkins', url: 'https://github.com/INabil02/public-repo.git'
+		
         stage("Compilation and Analysis") {
             parallel 'Compilation': {
                 if (isUnix()) {
                     sh "./mvnw clean install -DskipTests"
                 } else {
-                    bat "./mvnw.cmd clean install -DskipTests"
+                    bat "mvnw.cmd clean install -DskipTests"
                 }
             }, 'Static Analysis': {
                 stage("Checkstyle") {
                     if (isUnix()) {
                         sh "./mvnw checkstyle:checkstyle"
                     } else {
-                        bat "./mvnw.cmd checkstyle:checkstyle"
+                        bat "mvnw.cmd checkstyle:checkstyle"
                     }
                      step([$class: 'CheckStylePublisher',
                           canRunOnFailed: true,
@@ -36,13 +37,13 @@ node {
                         if (isUnix()) {
                             sh "./mvnw test -Punit"
                         } else {
-                            bat "./mvnw.cmd test -Punit"
+                            bat "mvnw.cmd test -Punit"
                         }
                     } catch(err) {
                         step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*UnitTest.xml'])
                         throw err
                     }
-                    step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*UnitTest.xml'])
+                    step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/*.xml'])
 
                 }
             }, 'Integration tests': {
@@ -51,13 +52,13 @@ node {
                         if (isUnix()) {
                             sh "./mvnw test -Pintegration"
                         } else {
-                            bat "./mvnw.cmd test -Pintegration"
+                            bat "mvnw.cmd test -Pintegration"
                         }
                     } catch(err) {
                         step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*IntegrationTest.xml'])
                         throw err
                     }
-                    step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*IntegrationTest.xml'])
+                    step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/*.xml'])
                 }
             }
 
@@ -72,7 +73,7 @@ node {
                     if (isUnix()) {
                         sh 'nohup ./mvnw spring-boot:run -Dserver.port=8989 &'
                     } else {
-                        bat 'start ./mvnw.cmd exec:java -Dserver.port=8989'
+                        bat 'start mvnw.cmd exec:java -Dserver.port=8989'
                     }
                 }
             }
