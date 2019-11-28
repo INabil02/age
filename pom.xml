@@ -20,6 +20,18 @@
 		<sonar.login>cc998f65287da620adeef04bcf36e58e1644e543</sonar.login>
 	</properties>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.17</version>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-ses -->
 		<dependency>
