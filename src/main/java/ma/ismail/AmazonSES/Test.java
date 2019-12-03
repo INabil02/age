@@ -4,6 +4,10 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
+
+@Component
 public class Test {
 	
 	public void compareEqualsWithOperator() {
@@ -26,7 +30,7 @@ public class Test {
 	}
 	
 	@SuppressWarnings("restriction")
-	public static String decryptage(String str) throws Exception{
+	public String decryptage(String str) throws Exception{
         SecretKey key = new SecretKeySpec("P@ssroot$/240204".getBytes(), "AES");
 		Cipher dcipher = Cipher.getInstance("AES");
 		dcipher.init(Cipher.DECRYPT_MODE, key);
@@ -36,7 +40,7 @@ public class Test {
 	}
 	
 	@SuppressWarnings("restriction")
-	public static String cryptage(String str) throws Exception{
+	public String cryptage(String str) throws Exception{
         SecretKey key = new SecretKeySpec("P@ssroot$/240204".getBytes(), "AES");
 		Cipher ecipher = Cipher.getInstance("AES");
 		ecipher.init(Cipher.ENCRYPT_MODE, key);
@@ -45,16 +49,28 @@ public class Test {
          return new sun.misc.BASE64Encoder().encode(enc);
 	}
 	
-	
+
 	public static void main(String[] args) {
-		try {
-		System.out.println(cryptage("AKIAICDVXF4E4DTBDMOQ"));
-		System.out.println(decryptage("ohH75ouRJZU9K+9mqh4o5u7+radU40gkUfcccVvc920="));
 		
+		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(PerformanceAspect.class);
+		
+        for (String beanName : applicationContext.getBeanDefinitionNames()) {
+            System.out.println(beanName);
+        }
+		
+        Test app = applicationContext.getBean(Test.class);
+		
+		try {
+			System.out.println(app.decryptage("ohH75ouRJZU9K+9mqh4o5u7+radU40gkUfcccVvc920="));
+			System.out.println(app.cryptage("Ag3nFAxZ+S/gwfIqm8jneYCI2MM/Br/WpvGgDm7MnbLB"));
+			System.out.println(app.decryptage("QOlse3H4ofiYdHlLOJrO46FqHcBCdBKV/IwLPdJpC5j8vUNVvJDoE1npEGchDmfi"));
+			
 		} catch(Exception e){
 			System.out.println(e.getMessage());
 			System.out.println(e.getCause());
 		}
+		
+		applicationContext.close();
 		
 	}
 
