@@ -1,15 +1,39 @@
 package ma.ismail.AmazonSES;
 
+import javax.annotation.PostConstruct;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
+@DependsOn("profileManager")
+@ComponentScan(basePackages = "ma.ismail.AmazonSES")
+//@Profile("dev")
 public class Test {
 	
+	private static final Log logger = LogFactory.getLog(Test.class);
+	
+	@Autowired(required = true)
+	ProfileManager profil;
+	
+	@PostConstruct
+	public void init() {
+		profil.getActiveProfilesByEnvironment();
+	}
+	
+    private void start() {
+        System.out.println("Message: " + profil.toString());
+    }
+    
 	public void compareEqualsWithOperator() {
 		String personalLoan = new String("cheap personal loans");
 		String homeLoan = new String("cheap personal loans");
@@ -51,27 +75,36 @@ public class Test {
 	
 
 	public static void main(String[] args) {
-		
-		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(PerformanceAspect.class);
-		
-        for (String beanName : applicationContext.getBeanDefinitionNames()) {
+				
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Test.class);
+		try {
+			ProfileManager app = null;
+			Test main = null;
+        for (String beanName : context.getBeanDefinitionNames()) {
+        	if(beanName.equals("profileManager")) {
+        		app = (ProfileManager)context.getBean(beanName);
+        	}
+        	if(beanName.equals("test")) {
+        		main = (Test)context.getBean(beanName);
+        	}
             System.out.println(beanName);
         }
 		
-        Test app = applicationContext.getBean(Test.class);
-		
-		try {
-			System.out.println(app.decryptage("ohH75ouRJZU9K+9mqh4o5u7+radU40gkUfcccVvc920="));
-			System.out.println(app.cryptage("Ag3nFAxZ+S/gwfIqm8jneYCI2MM/Br/WpvGgDm7MnbLB"));
-			System.out.println(app.decryptage("QOlse3H4ofiYdHlLOJrO46FqHcBCdBKV/IwLPdJpC5j8vUNVvJDoE1npEGchDmfi"));
+        //Test app = context.getBean(Test.class);
+        app.getActiveProfilesByProperty();
+        app.getActiveProfilesByEnvironment();
+        
+        //main.profil.getActiveProfilesByProperty();
+
+		//	System.out.println(app.decryptage("ohH75ouRJZU9K+9mqh4o5u7+radU40gkUfcccVvc920="));
+		//	System.out.println(app.cryptage("Ag3nFAxZ+S/gwfIqm8jneYCI2MM/Br/WpvGgDm7MnbLB"));
+		//	System.out.println(app.decryptage("QOlse3H4ofiYdHlLOJrO46FqHcBCdBKV/IwLPdJpC5j8vUNVvJDoE1npEGchDmfi"));
 			
 		} catch(Exception e){
-			System.out.println(e.getMessage());
-			System.out.println(e.getCause());
+			logger.info("context", e);
 		}
 		
-		applicationContext.close();
-		
+		context.close();
 	}
 
 }
