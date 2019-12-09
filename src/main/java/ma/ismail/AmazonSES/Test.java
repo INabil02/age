@@ -1,5 +1,8 @@
 package ma.ismail.AmazonSES;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 import javax.annotation.PostConstruct;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -15,67 +18,101 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@DependsOn("profileManager")
+@DependsOn("asyncConfiguration")
 @ComponentScan(basePackages = "ma.ismail.AmazonSES")
 //@Profile("dev")
 public class Test {
-	
+
 	private static final Log logger = LogFactory.getLog(Test.class);
-	
+
 	@Autowired(required = true)
 	ProfileManager profil;
-	
+
+	@Autowired
+	AsyncConfiguration asyncMethodes;
+
 	@PostConstruct
 	public void init() {
 		profil.getActiveProfilesByEnvironment();
 	}
-	
-    private void start() {
-        System.out.println("Message: " + profil.toString());
-    }
-    
+
+	private void start() {
+		System.out.println("Message: " + profil.toString());
+	}
+
 	public void compareEqualsWithOperator() {
 		String personalLoan = new String("cheap personal loans");
 		String homeLoan = new String("cheap personal loans");
-		     
-		//since two strings are different object result should be false
+
+		// since two strings are different object result should be false
 		boolean result = personalLoan == homeLoan;
 		System.out.println("Comparing two strings with == operator: " + result);
-		     
-		//since strings contains same content , equals() should return true
+
+		// since strings contains same content , equals() should return true
 		result = personalLoan.equals(homeLoan);
 		System.out.println("Comparing two Strings with same content using equals method: " + result);
-		     
+
 		homeLoan = personalLoan;
-		//since both homeLoan and personalLoand reference variable are pointing to same object
-		//"==" should return true
+		// since both homeLoan and personalLoand reference variable are pointing to same
+		// object
+		// "==" should return true
 		result = (personalLoan == homeLoan);
 		System.out.println("Comparing two reference pointing to same String with == operator: " + result);
 	}
-	
+
 	@SuppressWarnings("restriction")
-	public String decryptage(String str) throws Exception{
-        SecretKey key = new SecretKeySpec("P@ssroot$/240204".getBytes(), "AES");
+	public String decryptage(String str) throws Exception {
+		SecretKey key = new SecretKeySpec("P@ssroot$/240204".getBytes(), "AES");
 		Cipher dcipher = Cipher.getInstance("AES");
 		dcipher.init(Cipher.DECRYPT_MODE, key);
-		byte[] dec= new sun.misc.BASE64Decoder().decodeBuffer(str);
-        byte[] utf8 = dcipher.doFinal(dec);
-        return new String(utf8, "UTF-8");
+		byte[] dec = new sun.misc.BASE64Decoder().decodeBuffer(str);
+		byte[] utf8 = dcipher.doFinal(dec);
+		return new String(utf8, "UTF-8");
 	}
-	
+
 	@SuppressWarnings("restriction")
-	public String cryptage(String str) throws Exception{
-        SecretKey key = new SecretKeySpec("P@ssroot$/240204".getBytes(), "AES");
+	public String cryptage(String str) throws Exception {
+		SecretKey key = new SecretKeySpec("P@ssroot$/240204".getBytes(), "AES");
 		Cipher ecipher = Cipher.getInstance("AES");
 		ecipher.init(Cipher.ENCRYPT_MODE, key);
-		 byte[] utf8 = str.getBytes("UTF-8");
-         byte[] enc = ecipher.doFinal(utf8);
-         return new sun.misc.BASE64Encoder().encode(enc);
+		byte[] utf8 = str.getBytes("UTF-8");
+		byte[] enc = ecipher.doFinal(utf8);
+		return new sun.misc.BASE64Encoder().encode(enc);
 	}
-	
+
+	public void testAsyncAnnotationForMethodsWithReturnType() throws InterruptedException, ExecutionException {
+		System.out.println("Invoking an asynchronous method. " + Thread.currentThread().getName());
+		//AsyncConfiguration asyncMethodes = new AsyncConfiguration();
+		Future<String> future = asyncMethodes.asyncMethodWithReturnType();
+
+		while (true) {
+			if (future.isDone()) {
+				System.out.println("Result from asynchronous process - " + future.get());
+				break;
+			}
+			System.out.println("Continue doing something else. ");
+			Thread.sleep(1000);
+		}
+	}
 
 	public static void main(String[] args) {
-				
+		
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Test.class,AsyncConfiguration.class);
+		Test main = null;
+        for (String beanName : context.getBeanDefinitionNames()) {
+        	if(beanName.equals("test")) {
+        		main = (Test)context.getBean(beanName);
+        	}
+        	//System.out.println(beanName);
+        }
+        
+		try {
+			main.testAsyncAnnotationForMethodsWithReturnType();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+		
+	/*			
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Test.class);
 		try {
 			ProfileManager app = null;
@@ -104,7 +141,7 @@ public class Test {
 			logger.info("context", e);
 		}
 		
-		context.close();
+		context.close(); */
 	}
 
 }

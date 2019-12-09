@@ -23,7 +23,7 @@ public class ProfileManager {
     
     @PostConstruct
     public void init() {
-    	env.setActiveProfiles("dev");
+    	//env.setActiveProfiles("dev");
     }
     
     @PreDestroy
