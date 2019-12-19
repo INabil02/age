@@ -1,0 +1,68 @@
+<definitions 
+	xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:s0="urn:Comp_GenDocument_AI"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/"
+	targetNamespace="urn:Comp_GenDocument_AI"
+	xmlns:tns="urn:Comp_GenDocument_AI">
+
+
+	<types>
+		<xsd:schema elementFormDefault="unqualified" targetNamespace="urn:Comp_GenDocument_AI">
+			<xsd:element name="input" type="tns:input"/>
+			<xsd:element name="message_retour" type="tns:message_retour"/>
+			<xsd:simpleType name="WLChar">
+				<xsd:restriction base="xsd:string">
+					<xsd:length value="1" fixed="true"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:complexType name="message_retour" s0:nomcomplet="message_retour">
+				<xsd:sequence>
+					<xsd:element name="coderetour" type="xsd:int"/>
+					<xsd:element name="message_ret" type="xsd:string"/>
+					<xsd:element name="chemin" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="input" s0:nomcomplet="input">
+				<xsd:sequence>
+					<xsd:element name="P_numadherent" type="xsd:int"/>
+					<xsd:element name="P_Document" type="xsd:string"/>
+					<xsd:element name="p_version" type="xsd:int"/>
+				</xsd:sequence>
+			</xsd:complexType>
+		</xsd:schema>
+	</types>
+	<message name="Comp_GenDocument_AI_proc_generer_document_MessageIn">
+		<part name="parameters" element="tns:message_retour"/>
+	</message>
+	<message name="Comp_GenDocument_AI_proc_generer_document_MessageOut">
+		<part name="parameters" element="tns:input"/>
+	</message>
+	<portType name="Comp_GenDocument_AISOAPPortType">
+		<operation name="proc_generer_document">
+			<documentation>
+			</documentation>
+			<input message="s0:Comp_GenDocument_AI_proc_generer_document_MessageIn"/>
+			<output message="s0:Comp_GenDocument_AI_proc_generer_document_MessageOut"/>
+		</operation>
+	</portType>
+	<binding name="Comp_GenDocument_AISOAPBinding" type="s0:Comp_GenDocument_AISOAPPortType">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+		<operation name="proc_generer_document">
+			<soap:operation soapAction="urn:Comp_GenDocument_AI/proc_generer_document" style="document"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="Comp_GenDocument_AI">
+		<port name="Comp_GenDocument_AISOAPPort" binding="s0:Comp_GenDocument_AISOAPBinding">
+			<soap:address location="http://srv-adh4/COMP_GENDOCUMENT_AI_WEB/awws/Comp_GenDocument_AI.awws"/>
+		</port>
+	</service>
+</definitions>
